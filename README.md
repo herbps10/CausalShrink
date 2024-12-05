@@ -1,2 +1,2 @@
 # CausalShrink
-Shrinkage methods for causal parameters
+Penalization methods for causal parameters.
