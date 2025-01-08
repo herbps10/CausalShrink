@@ -6,8 +6,14 @@ hard_thresholded_normal_mean <- function(lambda, mu, sigma) {
 }
 
 hard_thresholded_normal_variance <- function(lambda, mu, sigma) {
-  ex2 <- (truncnorm::vtruncnorm(-Inf, -lambda, mu, sigma) + (truncnorm::etruncnorm(-Inf, -lambda, mu, sigma))^2) * pnorm(-lambda, mu, sigma) +
-    (truncnorm::vtruncnorm(lambda, Inf, mu, sigma) + (truncnorm::etruncnorm(lambda, Inf, mu, sigma))^2) * (1 - pnorm(lambda, mu, sigma))
+  v_left <- truncnorm::vtruncnorm(-Inf, -lambda, mu, sigma)
+  v_left <- pmax(0, ifelse(is.nan(v_left), 0, v_left))
+  v_right <- truncnorm::vtruncnorm(-Inf, -lambda, mu, sigma)
+  v_right <- pmax(0, ifelse(is.nan(v_left), 0, v_left))
+
+  ex2 <- (v_left + (truncnorm::etruncnorm(-Inf, -lambda, mu, sigma))^2) * pnorm(-lambda, mu, sigma) +
+    (v_right + (truncnorm::etruncnorm(lambda, Inf, mu, sigma))^2) * (1 - pnorm(lambda, mu, sigma))
+
   ex2 - hard_thresholded_normal_mean(lambda, mu, sigma)^2
 }
 
